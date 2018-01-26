@@ -29,7 +29,7 @@ const (
 type ServerConn struct {
 	// Do not use EPSV mode
 	DisableEPSV bool
-
+	DisableUTF8 bool
 	conn          *textproto.Conn
 	host          string
 	timeout       time.Duration
@@ -131,9 +131,10 @@ func (c *ServerConn) Login(user, password string) error {
 	}
 
 	// Switch to UTF-8
-	err = c.setUTF8()
-
-	return err
+	if !c.DisableUTF8 {
+		return c.setUTF8()
+	}
+	return nil
 }
 
 // feat issues a FEAT FTP command to list the additional commands supported by
